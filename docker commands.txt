@@ -30,9 +30,9 @@ docker ps -l(last container which is running)
 docker ps -q(gives the id of running containers)
 docker ps -lq(Id of last containers)
 docker ps -a | head -2
-docker logs --tail 1 --follow lastest_id
+docker logs --tail 1 (--follow lastest_id)
 docker kill running_container_id (exiting the running container immediately)
-docker stop running_container_id(exiting the running container after 10 seconds
+docker stop running_container_id(exiting the running container after 10 seconds)
 docker start container_id(it will restart the exited container)
 docker container ls
 docker rm container_id(removes the container)
