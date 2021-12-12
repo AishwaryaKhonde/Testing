@@ -1,0 +1,31 @@
+ 3.145.27.61
+ssh -i kubernetes.pem ubuntu@3.82.202.219
+cd /var/www/html/
+sudo vi index.html
+:wq
+top
+
+Security group:sg-05a6ed04b86b5bb0c
+
+#!/bin/bash
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
+-------------------------------------------------------------------------------------------------
+ansible all -m command -a 'yum install httpd -y' -b
+---------------------------------------------------------------------------
+sudo yum update -y
+sudo amazon-linux-extras install docker
+sudo yum install docker
+sudo service docker start
+sudo service docker status
+start docker.service
+
+
+----------------------------------------------
+
+httpd status
+------------------------------------------------------
+ansible -m shell -a "mkdir test"

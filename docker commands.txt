@@ -1,0 +1,207 @@
+date
+sudo hwclock --hctosys
+timedatectl
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo apt-get install docker.io -y
+systemctl status
+systemctl status docker.service
+
+
+-------------------------------------------------
+sudo su
+docker ps ---->it will display only running containers
+docker run busybox echo hello world
+docker ps -a --->it will display all containers
+docker run -it ubuntu bash
+docker run -d ubuntu bash
+---------------------------------
+apt-get update
+apt install figlet
+figlet aish
+exit
+docker logs  ubuntucode_id -f
+docker run -it jpetazzo/clock
+docker run -d jpetazzo/clock(runs at the background)
+docker ps -a | grep -i "jpetazzo"
+------------------------------------------------------
+docker ps -l(last container which is running)
+docker ps -q(gives the id of running containers)
+docker ps -lq(Id of last containers)
+docker ps -a | head -2
+docker logs --tail 1 --follow lastest_id
+docker kill running_container_id (exiting the running container immediately)
+docker stop running_container_id(exiting the running container after 10 seconds
+docker start container_id(it will restart the exited container)
+docker container ls
+docker rm container_id(removes the container)
+docker system prune(it removes all the exited or unused containers)
+docker rm -f $(docker ps -a -q)(it will delete all the containers)
+-------------------------------------------------------------------------------
+docker images(provides the list of images used in container)
+docker image ls
+docker image ls --no-trunc
+docker image ls --filter "before=image_id"
+docker image ls --filter "dangling=true"
+docker image ls --format "{{.ID}}:{{.Repository}}"
+docker image inspect image_id | more
+docker image tag jpetazzo/clock:latest aish:latest(it will copy the image id)
+docker image rm image_name(aish-->it will remove/delete the image)
+docker info 
+docker --version
+docker search ubuntu
+----------------------------------------------------------
+docker pull nginx
+docker pull busybox
+nano Dockerfile
+     FROM ubuntu
+
+     RUN apt-get update
+     RUN apt-get install figlet
+cat Dockerfile
+docker build -t figlet .
+docker image ls
+docker run -it figlet
+figlet aish
+exit
+---------------------------------------------------------
+rm Dockerfile
+ls -l
+nano Dockerfile
+  FROM centos
+  MAINTAINER aishwaryakhonde@gmail.com
+  RUN yum install -y httpd (for multiple -->RUN yum install -y git \ firefox(can use space also))
+  #COPY index.html /var/www/html/index.html
+  EXPOSE 80
+
+docker build -t aish .
+docker image ls
+docker run -it aish
+httpd -v
+
+-------------------------------------------------------------
+docker login
+docker pull centos(pull anyone image from container)
+docker tag centos:latest aishkhonde/test-repo:tag1(give a tag name to that image)
+docker push aishkhonde/test-repo:tag1(push the image to the repo in docker hub)
+------------------------------------------------------------------------------------
+Cmd command--------
+nano Dockerfile
+  FROM ubuntu
+  RUN apt-get update
+  RUN apt-get install figlet
+  CMD figlet -f script hello
+docker build -t figlet1 .
+docker run -it figlet1
+--------------------------------------------------------------------------------------
+sudo gedit cprog.c
+    #include<stdio.h>
+    int main(){
+    printf("hello,world!");
+    return 0;
+    }
+nano Dockerfile
+    FROM ubuntu
+    RUN apt-get update
+    RUN apt -get install -y build-essential
+    COPY cprog.c /
+    RUN apt-get install gcc
+    RUN gcc cprog.c -o hello
+    RUN make hello
+    CMD /hello
+
+docker build -t hello .
+docker run -it hello
+---------------------------------------------------------------------------
+docker network ls
+docker run -d -P nginx
+docker inspect bridge(name)
+docker run -it ubuntu /bin/bash
+------------------------------------------------
+creating new network-----
+docker network create --driver bridge new_network
+docker network ls
+docker run -it --network=new_network ubuntu /bin/bash
+docker network inspect new_network(in other duplicate terminal)
+docker run dti --name aishu --net new_network ubuntu /bin/bash
+docker run -it --name aishu11 --net new_network centos
+  ping aishu
+  cat /etc/hosts
+-----------------------------------------------------------------
+creating a docker volume---
+docker volume ls
+docker volume create --name=riki(or docker volume create hello)
+--------------------------------------------------------------------------------
+docker-compose---------
+sudo curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-`uname -s`-`uname -m` | sudo tee /usr/local/bin/docker-compose > /dev/null
+sudo chmod +x /usr/local/bin/docker-compose
+ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+docker-compose --version
+
+
+apt-get install docker-compose
+docker-compose --version
+mkdir test
+cd test
+sudo gedit docker-compose.yml
+  wordpress:
+    image:  wordpress
+    links:
+      - db:mysql
+    ports:
+      - 8080:80
+  db:
+    image:  mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD:  example
+
+docker-compose up
+------------------------------------------------------------------------------------------------
+how to deploy a static website using docker
+mkdir nginx
+cd nginx
+nano Dockerfile
+  FROM nginx
+  COPY . /usr/share/nginx/html
+docker build -t static_nginx .
+docker run -it -d -p 8080:80 static_nginx
+Check at the browser using ipaddress:8080
+nano index.html
+ <h1>Hello all!</h1>
+docker build -t static_nginx_web .
+docker run -it -d -p 8080:80 static_nginx_web
+----------------------------------------------------------------------------------
+mkdir apache2
+cd apache2
+nano Dockerfile
+   FROM httpd
+   COPY . /usr/local/apache2/htdocs
+docker build -t static_apache2 .
+docker run -it -d -p 8080:80 static_apache2
+
+nano index.html
+  <h1>Hello everyone</h1>
+docker build -t static_apache2_web .
+docker run -it -d -p 8080:80 static_apache2_web
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

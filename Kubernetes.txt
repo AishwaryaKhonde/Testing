@@ -1,0 +1,142 @@
+Install ubuntu on aws of 2gb t2.medium 
+
+
+root@ip-172-31-4-104:/etc/docker# history
+  
+    2  sudo apt-get update
+    3  sudo apt-get install docker.io
+    4  sudo usermod -aG docker $USER
+    5  sudo systemctl start docker
+    6  sudo systemctl enable docker
+    7  $ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+    8  curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+    9  sudo apt install curl
+   10  $ sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+   11  sudo apt-add-repositorycur "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+   12  sudo apt-mark hold kubeadm kubelet kubectl
+   13  kubeadm version
+   14  sudo apt-get install kubeadm kubelet kubectl
+   15  sudo apt-mark hold kubeadm kubelet kubectl
+   16  kubeadm version
+
+
+   17  sudo swapoff -a
+   18  sudo hostnamectl set-hostname master-node
+ 
+
+   23  sudo kubeadm init
+   24  systemctl status kubelet
+   25  apt-get update
+   26  sudo kubeadm init
+
+   32  systemctl restart kubelet
+   33  kubeadm reset
+   34  cd /etc/docker/
+   35  ls
+   36  pwd
+   37  vi daemon.json
+
+
+{
+    "exec-opts": ["native.cgroupdriver=systemd"]
+}
+
+
+   38  sudo systemctl daemon-reload
+   39  sudo systemctl restart docker
+   40  systemctl restart kubelet
+
+
+   41  sudo kubeadm init
+   42  kubectl get nodes
+
+
+   43  kubectl cluster-info
+   44  mkdir -p $HOME/.kube
+   45  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+   46  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+
+   47  sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+   48  kubectl get pods --all-namespaces
+   49  kubectl get nodes
+   50  kubeadm token create --print-join-command
+   51  kubectl get nodes
+---------------------------------------------------------------------------------------------------
+nano nginx.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+   env: dev
+   version: v1
+spec:
+  containers:
+  - name: nginx2
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+kubectl create -f nginx.yaml
+kubectl get pods
+kubelet get pods --namespace=kube-system
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+   env: dev
+   version: v1
+spec:
+  containers:
+  - name: my-nginx
+    image: nginx:latest
+    ports:
+  - containerPort: 80
+--------------------------------------------------------------------------------
+ kubectl get pod --show-labels
+kubectl get pods -l status=online
+kubectl get pods --all-namespaces
+kubectl get pods --field-selector=status.phase=Running
+kubectl delete pods kuard
+kubectl delete pods –all || To delete all pods in one go
+kubectl get pods -o=wide --sort-by="{.spec.nodeName}"
+kubectl get pod --show-labels
+alias k="kubectl get pods"
+alias k1="kubectl"
+k1 delete pod nginx3
+--------------------------------------------
+deployment----
+nano nginx-deployment.yaml
+kubectl apply -f https://k8s.io/examples/controllers/nginx-deployment.yaml
+k1 get pods
+kubectl delete pod nginx-deployment-66b6c48dd5-5lprg
+k1 get pods
+kubectl expose pod nginx-deployment-66b6c48dd5-2ztgn --type=NodePort --target-port=80 -o yaml
+kubectl describe pod nginx-deployment-66b6c48dd5-2ztgn | grep -i ip
+
+
+kubectl taint nodes slave1-node key1=value1:NoSchedule
+nano Pod.yaml
+  apiVersion: v1
+kind: Pod
+metadata:
+  name: file1
+  labels:
+    zones: prod
+    version: v1
+spec:
+  containers:
+    - name: hello-pod
+      image: nigelpoulton/pluralsight-docker-ci:latest
+      ports:
+        - containerPort: 80
+
+kubectl create -f Pod.yaml
+kubectl get pods -o wide(it will show pending state bcz of taint)
+kubectl taint nodes slave1-node key1=value1:NoSchedule-(untainting)
+kubectl get pods -o wide(shows running state ,as we have untainted)
+
+  

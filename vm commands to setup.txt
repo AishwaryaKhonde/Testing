@@ -1,0 +1,153 @@
+https://console.aws.amazon.com/support/home?#/case/create?issueType=customer-service
+
+
+ip a
+cd .ssh
+ls -l
+ssh-keygen
+ssh clientserver@ipaddress
+sudo apt update
+$ sudo apt install software-properties-common
+$ sudo add-apt-repository --yes --update ppa:ansible/ansible
+$ sudo apt install ansible
+setting
+network
+attached->Bridge Adapter
+$ssh-keygen
+$ssh-copy-id shahbaz1@192.168.1.7
+ssh shahbaz1@192.168.1.7
+exit
+-------------------------------------------------------------------------------------
+ip -a
+sudo apt-get update
+sudo apt upgrade
+$ sudo apt install software-properties-common
+$ sudo add-apt-repository --yes --update ppa:ansible/ansible
+$ sudo apt install ansible
+cd /etc/ansible
+ls -la
+sudo chmod 777 hosts
+gedit hosts
+cd ~
+ls -la
+ssh-keygen
+cd /home/tasmiya
+ssh-copy-id 192.168.0.2
+ansible all -m ping
+setting
+network
+attached->Bridge Adapter
+$ssh-keygen
+$ssh-copy-id shahbaz1@192.168.1.7
+ssh shahbaz1@192.168.1.7
+exit
+---------------------------------------------
+Client:
+ls -l
+
+
+--------------------------------------------
+Server:
+ansible all -m ping
+ansible all -m shell -a "mkdir test"
+----------------------------------------
+YAML
+sudo gedit first.yaml
+
+To create first playbook and execute it
+##############################################
+[student@workstation playbooks]$ cat first.yaml
+- name: my first playbook
+  hosts: all
+  become: true
+  tasks:
+   - name: install the package
+     apt:
+      name: apache2
+      state: present
+
+
+- name: install second package
+yum:
+name: vsftpd
+state: present
+
+[student@workstation playbooks]$ ansible-playbook --syntax-check first.yaml
+[student@workstation playbooks]$ ansible-playbook first.yaml
+-------------------------------------------------------------------------------
+sudo gedit second.yaml
+- name: Shell Command
+  hosts: all
+  tasks:
+    - name: Check Date with Shell command
+      shell:
+         "date"
+      register: datecmd
+      tags: datecmd
+    - debug: msg="{{datecmd.stdout}}"
+
+
+[student@workstation playbooks]$ ansible-playbook --syntax-check second.yaml
+[student@workstation playbooks]$ ansible-playbook second.yaml
+
+--------------------------------------------------------------------------
+sudo gedit third.yaml
+- hosts: all
+  tasks:
+  - name: Ansible create file if it doesn't exist example
+    file:
+      name: demo2
+      state: directory //to create a file we need to give touch,to delete a file or directory give absent
+
+[student@workstation playbooks]$ ansible-playbook --syntax-check second.yaml
+[student@workstation playbooks]$ ansible-playbook second.yaml
+--------------------------------------------------------------------------------
+sudo all -m shell -a "useradd test2" -b -K
+-------------------------------------------------------
+ansible-vault create file_name.yaml
+ansible-playbook --ask-vault-pass file_name.yaml
+--------------------------------------------------------------------------------
+delete a file from git
+
+- hosts: all
+  tasks:
+  - name: Ansible create file if it doesn't exist example
+    file:
+    path: /home/aish2/clone/demo.txt
+    state: absent
+
+[student@workstation playbooks]$ ansible-playbook --syntax-check second.yaml
+[student@workstation playbooks]$ ansible-playbook second.yaml
+-------------------------------------------------------------------------------------
+how to copy a file
+ansible all -m copy -a src='/etc/ansible/hosts dest=/home/aish2/clone'
+-----------------------------------------------------------------------------------------
+Clone a file in git
+
+- hosts: all
+  tasks:
+  - name: Clone a github repository
+    git:
+      repo: https://github.com/Aishkhonde/demo2.git
+      dest: /home/aish2/clone
+      clone: yes
+      update: yes
+
+[student@workstation playbooks]$ ansible-playbook --syntax-check repo.yaml
+[student@workstation playbooks]$ ansible-playbook repo.yaml
+------------------------------------------------------------------------------------------
+sudo gedit second.yaml
+- name: Shell Command
+  hosts: all
+  tasks:
+    - name: Check Date with Shell command
+      shell:
+         "mkdir demo1"
+      register: abc
+    - debug: msg="{{abc.stdout}}"
+
+
+[student@workstation playbooks]$ ansible-playbook --syntax-check second.yaml
+[student@workstation playbooks]$ ansible-playbook second.yaml
+
+
