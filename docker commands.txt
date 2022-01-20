@@ -4,6 +4,14 @@ timedatectl
 sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get install docker-ce docker-ce-cli containerd.io
+{
+sudo yum update -y
+sudo amazon-linux-extras install docker
+sudo yum install docker
+sudo service docker start
+sudo service docker status
+start docker.service
+}
 sudo apt-get install docker.io -y
 systemctl status
 systemctl status docker.service
@@ -30,9 +38,9 @@ docker ps -l(last container which is running)
 docker ps -q(gives the id of running containers)
 docker ps -lq(Id of last containers)
 docker ps -a | head -2
-docker logs --tail 1 (--follow lastest_id)
+docker logs --tail 1 (-->follow lastest_id) 
 docker kill running_container_id (exiting the running container immediately)
-docker stop running_container_id(exiting the running container after 10 seconds)
+docker stop running_container_id(exiting the running container after 10 seconds
 docker start container_id(it will restart the exited container)
 docker container ls
 docker rm container_id(removes the container)
@@ -60,9 +68,9 @@ nano Dockerfile
      RUN apt-get update
      RUN apt-get install figlet
 cat Dockerfile
-docker build -t figlet .
+docker build -t figlet1 .
 docker image ls
-docker run -it figlet
+docker run -it figlet1
 figlet aish
 exit
 ---------------------------------------------------------
@@ -104,7 +112,7 @@ sudo gedit cprog.c
 nano Dockerfile
     FROM ubuntu
     RUN apt-get update
-    RUN apt -get install -y build-essential
+    RUN apt-get install -y build-essential
     COPY cprog.c /
     RUN apt-get install gcc
     RUN gcc cprog.c -o hello
@@ -118,11 +126,11 @@ docker network ls
 docker run -d -P nginx
 docker inspect bridge(name)
 docker run -it ubuntu /bin/bash
-------------------------------------------------
+------------------------------------------------ 
 creating new network-----
 docker network create --driver bridge new_network
 docker network ls
-docker run -it --network=new_network ubuntu /bin/bash
+doc
 docker network inspect new_network(in other duplicate terminal)
 docker run dti --name aishu --net new_network ubuntu /bin/bash
 docker run -it --name aishu11 --net new_network centos
@@ -157,7 +165,7 @@ sudo gedit docker-compose.yml
       MYSQL_ROOT_PASSWORD:  example
 
 docker-compose up
-------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------   
 how to deploy a static website using docker
 mkdir nginx
 cd nginx
