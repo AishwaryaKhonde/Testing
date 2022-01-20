@@ -2,7 +2,8 @@ Install ubuntu on aws of 2gb t2.medium
 
 
 root@ip-172-31-4-104:/etc/docker# history
-  
+      
+    1  sudo su
     2  sudo apt-get update
     3  sudo apt-get install docker.io
     4  sudo usermod -aG docker $USER
@@ -12,9 +13,16 @@ root@ip-172-31-4-104:/etc/docker# history
     8  curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
     9  sudo apt install curl
    10  $ sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
-   11  sudo apt-add-repositorycur "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+   11  sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
    12  sudo apt-mark hold kubeadm kubelet kubectl
    13  kubeadm version
+[
+sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+]
    14  sudo apt-get install kubeadm kubelet kubectl
    15  sudo apt-mark hold kubeadm kubelet kubectl
    16  kubeadm version
@@ -111,6 +119,9 @@ k1 delete pod nginx3
 deployment----
 nano nginx-deployment.yaml
 kubectl apply -f https://k8s.io/examples/controllers/nginx-deployment.yaml
+kubectl get deployments
+kubectl get rs
+kubectl get pods --show-labels
 k1 get pods
 kubectl delete pod nginx-deployment-66b6c48dd5-5lprg
 k1 get pods
@@ -139,4 +150,148 @@ kubectl get pods -o wide(it will show pending state bcz of taint)
 kubectl taint nodes slave1-node key1=value1:NoSchedule-(untainting)
 kubectl get pods -o wide(shows running state ,as we have untainted)
 
-  
+  -------------------------------------------------------------------------------------------------------------------------------
+ 1  apt-get update
+    2  apt-get install docker.io -y
+    3  apt-get update
+    4  systemctl enable docker.service
+    5  systemctl start docker.service
+    6  apt-get update && apt-get install -y apt-transport-https
+    7  curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg|apt-key add -
+    8  cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+    9  deb http://apt.kubernetes.io/ kubernetes-xenial main
+   10  EOF
+   11  apt-get update
+   12  apt-get install -y kubeadm kubectl kubelet
+   13  apt-get update
+   14  cd /etc/docker
+   15  ls
+   16  sudo vi daemon.json
+   17  cat daemon.json
+   18  sudo systemctl daemon-reload
+   19  sudo systemctl restart kubelet
+   20  kubeadm reset
+   21  cd /etc/kubernetes
+   22  ls
+   23  sudo vi admin.conf
+   24  cat admin.conf
+   25  cd /home/ubuntu
+   26  sudo systemctl daemon-reload
+   27  sudo systemctl restart docker
+   28  sudo systemctl restart kubelet
+   29  kubeadm reset
+   30  cd /etc/docker
+   31  kubeadm reset
+   32  mkdir -p $HOME/.kube
+   33  cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+   34  cd /etc/kubernetes/
+   35  cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+   36  ls
+   37  sudo vi admin.conf
+   38  cat admin.conf
+   39  cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+   40  chown $(id -u):$(id -g) $HOME/.kube/config
+   41  kubeadm join 172.31.89.94:6443 --token de6civ.iwnfh3lot4mbcdng --discovery-token-ca-cert-hash sha256:c2b866276bbed4ae471821f23411dadc7f3986af8ec3fa6dd99d700fb1976f82
+   42  kubeadm reset
+   43  $HOME/.kube/config
+   44  cd $HOME/.kube/
+   45  ls
+   46  cat config
+   47  kubeadm join 172.31.89.94:6443 --token de6civ.iwnfh3lot4mbcdng --discovery-token-ca-cert-hash sha256:c2b866276bbed4ae471821f23411dadc7f3986af8ec3fa6dd99d700fb1976f82
+   48  cd $HOME/.kube/
+   49  ls
+   50  rm *
+   51  ls
+   52  cd /home/ubuntu
+   53  kubeadm join 172.31.89.94:6443 --token b37srn.tmhj6kk7827hxqls --discovery-token-ca-cert-hash sha256:c2b866276bbed4ae471821f23411dadc7f3986af8ec3fa6dd99d700fb1976f82
+   54  cd /etc/kubernetes
+   55  l
+   56  ls
+   57  cd $HOME/.kube/
+   58  ls
+   59  sudo vi config
+   60  ls
+   61  cat config
+   62  kubeadm join 172.31.89.94:6443 --token b37srn.tmhj6kk7827hxqls --discovery-token-ca-cert-hash sha256:c2b866276bbed4ae471821f23411dadc7f3986af8ec3fa6dd99d700fb1976f82
+   63  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+   64  kubeadm join 172.31.89.94:6443 --token jvsp5d.6670z0kqvyfv8bf2 --discovery-token-ca-cert-hash sha256:c2b866276bbed4ae471821f23411dadc7f3986af8ec3fa6dd99d700fb1976f82
+   65  cd /home/ubuntu
+   66  kubeadm join 172.31.89.94:6443 --token vzjili.lxjpr3878yey3tgz --discovery-token-ca-cert-hash sha256:d533d503a76436cce96dee70c3a7f7c7de0ea3768b968d7561c1bf961925e1fb
+   67  cd $HOME/.kube/
+   68  ls
+   69  cat config
+   70  kubeadm join 172.31.89.94:6443 --token vzjili.lxjpr3878yey3tgz --discovery-token-ca-cert-hash sha256:d533d503a76436cce96dee70c3a7f7c7de0ea3768b968d7561c1bf961925e1fb
+   71  kubectl get nodes
+   72  cd ~
+   73  cd /etc/kubernetes
+   74  ls
+   75  rm -rf *
+   76  ls
+   77  kubeadm join 172.31.89.94:6443 --token k68c28.0298hmzvfbdef2tu --discovery-token-ca-cert-hash sha256:d533d503a76436cce96dee70c3a7f7c7de0ea3768b968d7561c1bf961925e1fb
+   78  cd $HOME/.kube/
+   79  ls
+   80  cat config
+   81  cd /etc/kubernetes
+   82  ls
+   83  rm -rf *
+   84  ls
+   85  sudo vi admin.conf
+   86  ls
+   87  rm -rf *
+   88  ls
+   89  mkdir -p $HOME/.kube
+   90  cd $HOME/.kube
+   91  ls
+   92  nanorm -rf*
+   93  nanorm -rf *
+   94  rm *
+   95  ls
+   96  nano config
+   97  cat config
+   98  nano config
+   99  cat config
+  100  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  101  kubectl get nodes
+  102  cd /home/ubuntu
+  103  kubectl get nodes
+  104  kubectl get pods
+  105  kubectl get pods --all-namespaces
+  106  nano nginx.yaml
+  107  kubectl create -f nginx.yaml
+  108  cat nginx.yaml
+  109  kubectl get pods
+  110  kubelet get pods --namespace=kube-system
+  111  kubectl get pods -l status=online
+  112  kubectl get pods --field-selector=status.phase=Running
+  113  nano nginx1.yml
+  114  kubectl create -f nginx1.yml
+  115  kubectl get pods
+  116  kubectl get pods -o=wide --sort-by="{.spec.slave}"
+  117  kubectl get pods -o=wide --sort-by="{.spec.nodeName}"
+  118  kubectl delete pod nginx1
+  119  kubectl get pods
+  120  nano nginx-deployment.yaml
+  121  cat nginx-deployment.yaml
+  122  kubectl apply -f https://k8s.io/examples/controllers/nginx-deployment.yaml
+  123  kubectl get deployments
+  124  kubectl get rs
+  125  kubectl get deployments
+  126  kubectl get pods --show-labels
+  127  kubectl delete pod nginx-deployment-9456bbbf9-2kft8
+  128  kubectl expose pod nginx-deployment-9456bbbf9-km42f--type=NodePort --target-port=80 -o yaml
+  129  kubectl expose pod nginx-deployment-9456bbbf9-km42f --type=NodePort --target-port=80 -o yaml
+  130  kubectl describe pod nginx-deployment-9456bbbf9-km42f | grep -i ip
+  131  kubectl get pods --show-labels
+  132  kubectl taint nodes slave-node key1=value1:NoSchedule
+  133  kubectl get nodes
+  134  kubectl taint nodes ip-172-31-82-174 key1=value1:NoSchedule
+  135  nano Pod.yaml
+  136  kubectl create -f Pod.yaml
+  137  kubectl get pods -o wide
+  138  nano Pod.yaml
+  139  kubectl create -f Pod.yaml
+  140  kubectl get pods -o wide
+  141  kubectl taint nodes ip-172-31-82-174 key1=value1:NoSchedule-
+  142  kubectl get pods -o wide
+  143  kubectl get nodes
+  144  kubectl get pods
