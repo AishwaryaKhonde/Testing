@@ -1,0 +1,251 @@
+Syntax:
+     use databaseName
+Example
+db.createCollection('product_catalog')
+syntax:
+db.collection_name.drop()
+Example:
+db.product_catalog.drop()
+
+Syntax - This command always drops the database currently in use.
+db.dropDatabase()
+
+
+A developer needs to decide a database for a travel booking application. The application advertises relevant, personalized offers for every customer as a unique selling point.
+What database do you think is the best option for this scenario?
+MongoDB
+RDBMS
+
+Q3 of 3outlined_flag
+A college wants to maintain a database that records the scores obtained by student in each component of their course. Every course has 2 mid-term exams and 1 final exam.
+Which database do you think is best suited for this scenario?
+MongoDB
+RDBMS
+Submit
+
+Q1 of 3outlined_flag
+Mark is creating a database and collection for maintaining student's profiles in XYZ university. He has created a database called XYZUniversityStudents, and a collection called student_profiles. He then tries to create another collection called student_profiles.
+What output would Mark get?
+<"ok":1>
+No output
+<"ok":0, 'errmsg':"a collection 'XYZUniversityStudents.student_profiles' already exists">
+
+show tables
+db.product_catalog.insert({"item":"furniture","price":600})
+
+Syntax:
+db.collection_name.insert(
+[
+{document1},
+{document2}
+]
+)
+Eg:
+db.product_catalog.insert (
+    {
+        prodid:7000010,
+        prodname:"nosql distilled",
+        publisher:"Addison-Wesley",
+        genre: {academic: "technical"},
+        ISBN:1234567,
+        price:400
+    }
+)
+db.product_catalog.insert ( [
+    {
+        prodid:7000012,
+        prodname:"Java for Dummies",
+        publisher:"John Wiley",
+        genre: {academic: "technical"},
+        ISBN:18407806,
+        price:400
+    },
+    {
+        prodid:7000013,
+        prodname:"Big Data: Principles and Best Practices",
+        publisher:"Dreamtech",
+        genre: {academic: "technical"},
+        price:700
+    },
+    {
+        prodid: 7000001,
+        prodname: "iphone 7",
+        manufacturer: "apple",
+        categories: {main:"electronics",sub:"smartphones"},
+        year_of_launch: 2017,
+        price: 60000,
+        colors: ["silver","black","gold","rosegold"]
+    }
+] )
+
+
+Syntax:
+For insertOne()
+     db.collection_name.insertOne( { <document> } )
+OR
+For insertMany()
+     db.collection_name.insertMany( [ { <document1> }, { <document2> } ] )
+db.product_catalog.find()
+db.product_catalog.find().pretty()
+db.collection_name.find( {query}, {projection} )
+Eg:db.product_catalog.find({publisher:"Dreamtech"})
+Projection
+The second parameter, or the second document is for the projection. This parameter specifies which fields are to be returned in the documents that match the query selection criteria. 
+The projection parameter document is usually written as 
+{ field1: <value>, field2: <value> ... }
+Eg:db.product_catalog.find({publisher:"Dreamtech"},{prodname:1,price:1})
+db.product_catalog.find({},{_id:0}).pretty()
+db.product_catalog.find({"categories.main":"electronics"})
+db.product_catalog.find({colors:"black"},{prodname:1})
+db.product_catalog.find({colors:"black"},{prodname:1,_id:0})
+ 
+Next you will see the usage of $and logical operator with find().
+Syntax:
+     db.collection_name.find(
+       { $and: [
+       { attribute1 : "value1" },
+       { attribute2 : "value2" }
+     ]})
+Logical operators----------
+db.product_catalog.find({ $and: [{ "categories.sub": "smartphones" }, { manufacturer: "apple" }] })
+db.product_catalog.find({$or:[{price:400}]})
+db.product_catalog.find({price:{$not:{$lt:700}}})
+
+gt,eq,neq,lte,gte,nin,in----------
+ db.product_catalog.find({price:{$nin:[400,700]}})
+db.product_catalog.find({price:{$lte:700}})
+db.product_catalog.find({price:{$in:[400,700]}})
+
+the prodnames of the products having both black and silver colors.
+db.product_catalog.find({colors:{$all:["black","silver"]}},{prodname:1})
+
+The requirement states that Zoiva wants to 
+retrieve Apple’s electronic products from their 
+catalog to create a report on the inventory and sales.
+They also want to check if phones with black and
+silver colors with release years as 2017-2018
+(both inclusive) and having price above 55000 rupees 
+are available or not, as these phones are in maximum demand.
+Eg:
+db.product_catalog.find({$and:[{manufacturer:"apple"},{colors:{$all:["black","silver"]}},{year_of_launch:{$in:[2017,2018]}},{price:{$gt:5500}}]}).pretty()
+
+
+
+db.user_profile.find({$and:[{ Location:"New York"},{Graduated:{$in:["2013","2014","2015"]}}]},{Name:1,UserId:1,_id:0})
+
+Update:
+Syntax:
+     db.collection_name.update(
+       { attribute1 : "value1" },
+       { $set : { attribute : "newValue" } } )
+
+The name of the book is currently 'nosql distilled' and we want to change it to 'NoSQL Distilled - Second Edition', the query to perform this action is given below
+db.product_catalog.update({prodid:7000010},{$set:{prodname:"NoSQL Distilled - Second Edition"}})
+
+Syntax:
+     db.collection_name.update( { $inc: { numericField: <number> } } )
+Works only on numeric values
+
+db.product_catalog.update({ISBN: 18407806},{$inc:{price:50}})
+db.product_catalog.update({ISBN: 18407806}, { $inc: { price: -50 } } )
+
+db.user_profile.insert([{UserId:"amy01",Name:"Amy James",Gender:"Female",Location:"India","Age":"19",
+   University:"Delhi University"},{UserId:"jimmy999",Name:"Jim Watson",From:"Cannada",Location:"Mexico",Office:"Google"},{UserId:"rachel_11",
+   Name:"Rachel Greene",Location:"New York","PhoneNo":"123456789",University:"Vassar University","Graduated":"2014"}])
+db.user_profile.updateMany({"UserId":"amy01"},{$set:{"University":"Anna University","Age":"21","Siblings":["Luke James","Anna James","Sharon James"]}})
+db.user_profile.updateMany({"UserId":"jimmy999"},{$set:{"University":"University of Colorado","Age":"42"}})
+db.user_profile.updateMany({"UserId":"jimmy999"},{$push:{"Favorite Football Team":"Manchester United F.C"}})
+
+db.product_catalog.update(
+   { prodid: 7000001  },
+   { $push: { colors: { $each: [ 'midnight blue', 'red' ] } } ,  $set: {prodname: "moto1"} }
+   
+)
+
+
+Syntax:
+     db.collection_name.deleteMany( {} )(to delete all the records)
+
+Example:
+db.product_catalog.deleteMany(
+    { price: { $lt : 1000 } } )
+
+db.user_profile.deleteOne({$and:[{Age:{$gt:40}, "Location": "Mexico"}]})
+
+db.product_catalog.count({"categories.main":"electronics"})
+db.product_catalog.distinct( "manufacturer" )
+
+The aggregation to be performed is specified inside $group. In this case we will be using $sum to add the values of the price field
+If we wanted to retrieve a count of all the mobiles made by a particular manufacturer and also get the total price of all these mobiles, simply using
+$project is used to specify which fields are required for performing the aggregation.
+$group is used to group the fields by value and then perform some aggregation
+Syntax:
+     db.collection_name.aggregate(
+    { $match: { key1 : "value1"} } )
+Example:
+db.product_catalog.aggregate( [
+    { $project: { _id: 0, manufacturer: 1, price: 1 } },
+    { $group: { _id: "$manufacturer", totalPrice: { $sum: "$price" } } }
+] )
+
+we are simply trying to filter documents such that we get a result of mobiles that are manufactured by lenovo.
+Syntax:
+     db.collection_name.aggregate(
+    { $match: {$and: [{ key1 : "value1"}, {key2 : "value2" } ] } } )
+Eg:
+   db.product_catalog.aggregate( { $match: { manufacturer: "lenovo" } })
+
+db.product_catalog.aggregate(
+    { $match: {$and: [{ manufacturer: "lenovo" }, {price : {$lt:10000} } ] } } )
+Example:
+db.product_catalog.aggregate( [
+    { $sort : { price: 1 } },
+    { $limit: 5},
+    { $out: "FiveCheapestMobiles"}
+] )
+
+Zoiva has millions of records in their product catalog. They want to find products based on price range. Their search returns results but is very slow. They want to return search results quickly to the users.
+Solution
+Zoiva needs to create index on the field based on which they are searching for products.
+Example:
+db.product_catalog.find(
+    { price: { $gte: 5000, $lte: 20000 } }
+).explain("executionStats")
+Example:
+db.product_catalog.createIndex(
+        { price:-1 })
+Syntax:
+     For ascending indexes:
+     db.collection_name.createIndex( { field_name : 1 } )
+
+     For descending indexes:
+     db.collection_name.createIndex( { field_name : -1 } )
+Syntax:
+     db.collection_name.createIndex( {field1 : 1, field2: -1} )
+Example:
+db.product_catalog.createIndex(
+        { price:1, rating:-1 })
+
+Syntax:
+
+     db.collection_name.getIndexes()
+
+Syntax:
+     If you know the name of the index
+     db.collection_name.dropIndex( "index_name" )
+OR
+     For ascending indexes:
+     db.collection_name.drop_Index( { field_name : 1 } )
+OR
+     For descending indexes:
+     db.collection_name.drop_Index( { field_name : -1 } )  
+Syntax:
+     db.collection_name.dropIndexes()
+for (var i = 1; i <= 50; i++) {
+   db.js_tryout.insert( { _id : i } )
+}
+
+var data = db.js_tryout.find({_id: {$gte: 5, $lte:15}}).toArray()
+for (var i=0; i < data.length; i++){
+print("The ID is "+ data[i]._id)
+}

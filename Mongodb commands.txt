@@ -1,0 +1,68 @@
+1. use customerdb;
+
+2.db.createUser(
+   {
+     user: "Aish",
+     pwd: "1234",
+     roles: [ "readWrite", "dbAdmin" ]
+   }
+)
+3.db.createCollection("customer");
+4.show collections
+--Insering the collections--
+5.db.customer.insert({first_name:"Aishwarya",last_name:"Khonde"});
+6.db.customer.insert({first_name:"Divya",last_name:"Gowda"});
+
+7.db.customer.find().pretty();
+8.db.customer.insert([{first_name:"Vanitha",last_name:"L"},{first_name:"Rakshitha",last_name:"p"}]);
+9.db.customer.find().pretty();
+10.db.customer.insert([{first_name:"Smrithi",last_name:"Mandanna",gender:"Female"},
+{first_name:"MS",last_name:"Dhoni",gender:"Male"}]);
+11.db.customer.find().pretty();
+12.db.customer.find();
+-- update the collections--
+13.db.customer.update({first_name:"Aishwarya"},{first_name:"Aishwarya",last_name:"Khonde",gender:"Female"});
+14.db.customer.find();
+15.db.customer.update({first_name:"Divya"},{$set:{gender:"Female"}});
+16.db.customer.find();
+17.db.customer.update({first_name:"Vanitha"},{$set:{gender:"Female",age:45}});
+18.db.customer.find();
+19.db.customer.update({first_name:"Vanitha"},{$inc:{age:5}});
+20.db.customer.find();
+--deleting a field-------
+21.db.customer.update({first_name:"Vanitha"},{$unset:{age:1}});
+---upsert-----
+22.db.customer.update({first_name:"Sush"},{first_name:"Sush",last_name:"B",gender:"Female"});
+23.db.customer.update({first_name:"Sush"},{first_name:"Sush",last_name:"B",gender:"Female"},{upsert:true});
+---rename field---
+24.db.customer.update({first_name:"Aishwarya"},{$rename:{"gender":"sex"}});
+--updatemany--
+25.db.customer.updateMany({},{$set:{status:"visitor"}});
+26.db.customer.updateMany({gender:"Male"},{$set:{status:"MV"}});
+27.db.customer.updateMany({first_name:"Rakshitha"},{$set:{gender:"Female"}});
+28.db.customer.update({gender:"Female"},{$set:{status:"MV"}},{multi:true});
+29.db.customer.find({first_name:"Aishwarya"}).pretty();
+---logical operators--
+30.db.customer.find({"age":{$gt:40}}).pretty();
+31.db.customer.find({"age":{$lt:40}}).pretty();
+32.db.customer.find({"age":{$eq:45}}).pretty();
+33.db.customer.find({"age":{$ne:45}}).pretty();
+-- if we remove the remaining n print only restricted things--
+34.db.customer.find({},{first_name:1});
+35.db.customer.find({},{_id:0,first_name:1});
+36.db.customer.find({},{_id:0,first_name:0,age:0});
+37.db.customer.find({gender:"Female"},{_id:0,first_name:1,last_name:1});
+-- remove-- 
+38.db.customer.remove({first_name:"Smrithi"});
+-- sort-- 
+39.db.customer.find({},{_id:0,first_name:1,last_name:1}).sort({"last_name":1});
+40.db.customer.find({},{_id:0,first_name:1,last_name:1}).sort({"last_name":-1});
+41.db.customer.find().sort({"last_name":-1}).pretty();
+42.db.customer.find({age:{$gt:20}},{_id:0,"first_name":1,"age":1}).sort({"first_name":1}).pretty();
+-- skip and limit--
+43.db.customer.find({age:{$gt:20}},{_id:0,"first_name":1,"age":1}).limit(1).pretty();
+44.db.customer.find().skip(2).pretty();
+45.db.customer.find().limit(2).skip(1).pretty();
+46.db.customer.find({age:{$gt:20}},{_id:0,"first_name":1,"age":1}).limit(2).skip(0).pretty();
+---counts the number of documents--
+47.db.customer.find().count();

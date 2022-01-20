@@ -1,4 +1,5 @@
  3.145.27.61
+cd Downloads
 ssh -i kubernetes.pem ubuntu@3.82.202.219
 cd /var/www/html/
 sudo vi index.html
