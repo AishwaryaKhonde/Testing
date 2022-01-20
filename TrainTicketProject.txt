@@ -1,0 +1,361 @@
+                                 TRAIN TICKET PROJECT
+
+Train_package
+TrainDAO.java
+
+package Train_package;
+
+import java.sql.*;
+
+public  class TrainDAO {
+
+    static Connection con=null;
+
+    public static int getcount()
+    {
+        int count=0;
+        try {
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/traindatabase","root","Aishwarya@123");
+
+            Statement st = con.createStatement();
+            ResultSet rs1 = st.executeQuery("select count from ticket where id=1");
+            while(rs1.next())
+                count = rs1.getInt(1);
+            PreparedStatement ps = null;
+            String str = "update ticket set count="+(count+1)+" where id=1";
+            ps = con.prepareStatement(str);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+    public Train findtrain(int trainNo){
+        Train train= null;
+        try {
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/traindatabase","root","Aishwarya@123");
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("select * from trains where train_no="+trainNo);
+            while(rs.next()){
+                train = new Train(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getInt(5));
+            }
+        } catch (SQLException e) {
+            System.out.println("train no. not found");
+        }
+        return train;
+    }
+}
+
+Train_package
+Train.java
+
+package Train_package;
+public class Train {
+    private int trainNo;
+    private String trainName;
+    private String Source, Destination;
+    double tkt_price;
+    public Train(int trainNo, String trainName, String source, String destination, double tkt_price) {
+        this.trainNo = trainNo;
+        this.trainName = trainName;
+        Source = source;
+        Destination = destination;
+        this.tkt_price = tkt_price;
+    } @Override
+    public String toString() {
+        return "Train{" +
+                "trainNo=" + trainNo +
+                ", trainName='" + trainName + '\'' +
+                ", Source='" + Source + '\'' +
+                ", Destination='" + Destination + '\'' +
+                ", tkt_price=" + tkt_price +
+                '}';
+    } public int getTrainNo() {
+        return trainNo;
+    } public String getTrainName() {
+        return trainName;
+    } public String getSource() {
+        return Source;
+    } public String getDestination() {
+        return Destination;
+    } public double getTkt_price() {
+        return tkt_price;
+    }
+}
+
+
+Passenger_details
+Passenger.java
+
+package Passenger_details;
+
+public class Passenger implements Comparable<Passenger> {
+    private String name;
+    private int age;
+    private char gender;
+
+    public Passenger(String name, int age, char gender) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public char getGender() {
+        return gender;
+    }
+
+    public void setGender(char gender) {
+        this.gender = gender;
+    }
+
+    @Override
+    public String toString() {
+        return "Passenger{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", gender='" + gender + '\'' +
+                '}';
+    }
+
+    @Override
+    public int compareTo(Passenger o) {
+        return this.name.compareTo(o.name);
+    }
+}
+
+Ticketpack
+Ticket.java
+
+package Ticketpack;
+
+import Passenger_details.Passenger;
+import Train_package.Train;
+import Train_package.TrainDAO;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+
+public class Ticket {
+    private int count;
+    private String pnr=null;
+    private String traveldate;
+    private Map<Passenger,Double> passengers= new TreeMap<>();
+    private Train train;
+
+    public Ticket(String traveldate, Train train) {
+        this.traveldate = traveldate;
+        this.train = train;
+        generatePNR();
+    }
+
+    private String generatePNR(){
+
+
+        count=TrainDAO.getcount();
+        char s= train.getSource().charAt(0);
+        char d= train.getDestination().charAt(0);
+        String[] date1 = traveldate.toString().split("-");
+        pnr = s+""+d+"_"+date1[2]+date1[1]+date1[0]+"_"+count;
+        return pnr;
+    }
+
+    private double calcPassengerFare(Passenger p){
+        double price= train.getTkt_price();
+        if(p.getAge()<=12)
+            price *=0.5;
+        else
+        if(p.getAge()>=60)
+            price *=0.6;
+        else
+        if(p.getGender()=='F')
+            price *=0.75;
+        passengers.put(p,price);
+        return price;
+
+
+
+
+    }
+
+    public void addPassenger(String name,int age,char gender){
+        Passenger p = new Passenger(name,age,gender);
+        calcPassengerFare(p);
+
+    }
+
+    private double calcTotalTicketPrice(){
+        double totamt=0;
+        for(double p:passengers.values())
+            totamt+=p;
+
+        return totamt;
+    }
+
+
+    private StringBuilder generateTicket(){
+        StringBuilder s=new StringBuilder();
+        s.append("PNR: "+getPnr()+'\n');
+        s.append(System.getProperty("line.separator"));
+        s.append("TRAIN NO.: "+train.getTrainNo()+"\n");
+        s.append(System.lineSeparator());
+        s.append("TRAIN NAME: "+train.getTrainName()+"\n");
+        s.append(System.lineSeparator());
+        s.append("FROM: "+train.getSource()+"\n");
+        s.append(System.lineSeparator());
+        s.append("TO: "+train.getDestination()+"\n");
+        s.append(System.lineSeparator());
+        s.append("TRAVEL DATE: "+traveldate+"\n");
+        s.append(System.lineSeparator());
+        s.append(" \nPASSENGERS \n");
+        s.append(System.lineSeparator());
+        s.append("Name      age     gender      fare \n");
+        s.append(System.lineSeparator());
+        for(Passenger p:passengers.keySet()) {
+            s.append(p.getName()+"      "+p.getAge()+"      "+p.getGender()+"       "+passengers.get(p));
+            s.append(System.lineSeparator());
+        }
+
+        s.append("Total Price: "+calcTotalTicketPrice());
+
+
+        return s;
+    }
+
+    public void writeTicket(){
+
+
+
+
+        try {
+            FileWriter myWriter = new FileWriter("C:\\Users\\User115\\Desktop\\"+getPnr()+".txt");
+            myWriter.write(String.valueOf(generateTicket()));
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public String getPnr() {
+        return pnr;
+    }
+
+    public String getTraveldate() {
+        return traveldate;
+    }
+
+    public Map<Passenger, Double> getPassengers() {
+        return passengers;
+    }
+
+    public Train getTrain() {
+        return train;
+    }
+}
+
+
+MainUI
+Main.java
+
+package MainUI;
+import Ticketpack.Ticket;
+
+import Train_package.TrainDAO;
+import javax.sound.midi.Soundbank;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) throws ParseException {
+        Scanner sc = new Scanner(System.in);
+        TrainDAO passenger = new TrainDAO();
+        System.out.println("enter train number");
+        int TRAIN_NO = sc.nextInt();
+        if (passenger.findtrain(TRAIN_NO) != null) {
+            System.out.println("enter the date(dd-mm-yyyy)");
+            String d = sc.next();
+            Date d1 = new SimpleDateFormat("dd-MM-yyyy").parse(d);
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+            Date todayDate = dateFormatter.parse(dateFormatter.format(new Date()));
+            if (d1.after(todayDate)) {
+                Ticket t = new Ticket(d, passenger.findtrain(TRAIN_NO));
+                System.out.println("Enter no. of passengers:");
+                int n = sc.nextInt();
+                int i = 0;
+                while (i < n) {
+                    System.out.println("Enter passenger details:");
+                    System.out.print("Enter the name: ");
+                    String name = sc.next();
+                    System.out.print("Enter the Age:");
+                    Integer age = sc.nextInt();
+                    System.out.println("Enter F for Female " + " Enter M for Male");
+                    String gender = sc.next();
+                    char c = gender.charAt(0);
+                    t.addPassenger(name, age, c);
+                    i++;
+                }
+                t.writeTicket();
+            } else {
+
+                System.out.println("date not correct");
+            }
+        } else
+            System.out.println("Train not found......");
+    }
+}
+
+
+Output:
+enter train number
+1001
+enter the date(dd-mm-yyyy)
+02-03-4000
+Enter no. of passengers:
+3
+Enter passenger details:
+Enter the name: b
+Enter the Age:12
+Enter F for Female  Enter M for Male
+F
+Enter passenger details:
+Enter the name: c
+Enter the Age:34
+Enter F for Female  Enter M for Male
+M
+Enter passenger details:
+Enter the name: a
+Enter the Age:70
+Enter F for Female  Enter M for Male
+M
+Successfully wrote to the file.
+
+
+enter train number
+1007
+Train not found......
+
+
+
